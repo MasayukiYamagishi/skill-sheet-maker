@@ -1,0 +1,94 @@
+[
+  {
+    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+    "name": "山田 太郎",
+    "affiliation": "株式会社ABC",
+    "age": 30,
+    "gender": "男",
+    "qualification": "基本情報技術者",
+    "education": "〇〇大学 卒業",
+    "work_term": "5年",
+    "station": "東京駅",
+    "speciality": "Web開発",
+    "strong_skills": "React, Node.js, TypeScript",
+    "pr": "Webアプリケーション開発において、フロントエンドからバックエンドまで幅広く対応可能です。特にReactを用いたSPA開発に強みがあります。",
+    "projects": [
+      {
+        "id": "proj1-uuid",
+        "period": "2022年4月 - 2023年3月",
+        "title": "ECサイトリニューアルプロジェクト",
+        "team_size": 5,
+        "server": "AWS EC2",
+        "os": "Linux",
+        "db": "PostgreSQL",
+        "network": "VPC",
+        "package": "npm",
+        "tools": "VS Code, Docker",
+        "languages": [
+          { "name": "TypeScript", "version": "4.x" },
+          { "name": "React", "version": "18.x" }
+        ],
+        "phases": ["要件定義", "基本設計", "詳細設計", "実装", "テスト", "運用・保守"],
+        "role": "フロントエンドエンジニア",
+        "scale": "10人月",
+        "details": "既存ECサイトのUI/UX改善と機能追加を担当。ReactとTypeScriptを用いてコンポーネント開発を行い、パフォーマンス向上に貢献しました。"
+      },
+      {
+        "id": "proj2-uuid",
+        "period": "2023年4月 - 2024年3月",
+        "title": "社内管理ツール開発",
+        "team_size": 3,
+        "server": "Firebase",
+        "os": "Cloud Functions",
+        "db": "Firestore",
+        "network": "HTTPS",
+        "package": "yarn",
+        "tools": "VS Code, Git",
+        "languages": [
+          { "name": "TypeScript", "version": "4.x" },
+          { "name": "Vue.js", "version": "3.x" }
+        ],
+        "phases": ["要件定義", "設計", "実装", "テスト"],
+        "role": "フルスタックエンジニア",
+        "scale": "6人月",
+        "details": "社内業務効率化のための管理ツールを開発。要件定義からデプロイまで一貫して担当し、業務フローの改善に貢献しました。"
+      }
+    ]
+  },
+  {
+    "id": "f7e8d9c0-b1a2-3456-7890-abcdef123456",
+    "name": "佐藤 花子",
+    "affiliation": "合同会社XYZ",
+    "age": 28,
+    "gender": "女",
+    "qualification": "応用情報技術者",
+    "education": "〇〇専門学校 卒業",
+    "work_term": "3年",
+    "station": "大阪駅",
+    "speciality": "モバイルアプリ開発",
+    "strong_skills": "Swift, Kotlin, Firebase",
+    "pr": "iOS/Android両方のモバイルアプリケーション開発経験があります。ユーザー体験を重視したUI/UX設計と、効率的な開発プロセスを心がけています。",
+    "projects": [
+      {
+        "id": "proj3-uuid",
+        "period": "2021年10月 - 2022年9月",
+        "title": "マッチングアプリ開発",
+        "team_size": 4,
+        "server": "AWS Amplify",
+        "os": "iOS/Android",
+        "db": "DynamoDB",
+        "network": "GraphQL",
+        "package": "CocoaPods, Gradle",
+        "tools": "Xcode, Android Studio",
+        "languages": [
+          { "name": "Swift", "version": "5.x" },
+          { "name": "Kotlin", "version": "1.x" }
+        ],
+        "phases": ["要件定義", "設計", "実装", "テスト"],
+        "role": "モバイルアプリエンジニア",
+        "scale": "8人月",
+        "details": "新規マッチングアプリのiOS/Android版を開発。UIコンポーネントの設計・実装、API連携、プッシュ通知機能などを担当しました。"
+      }
+    ]
+  }
+]
