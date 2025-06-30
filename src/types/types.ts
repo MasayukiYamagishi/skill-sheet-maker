@@ -1,4 +1,4 @@
-import { GenderConst } from '@/constants/constants';
+import { GenderConst, UserStatusConst } from '@/constants/constants';
 import { MbtiCodeConst, MbtiDataConst, MbtiIdentityConst } from '@/constants/mbtiDetails';
 import { QualificationOptions } from '@/constants/qualifications';
 import { toastKindMap } from '@/constants/toast';
@@ -53,13 +53,8 @@ export type Mbti = {
   identity: MbtiIdentity;
 };
 
-// TODO: TrainingStatusは作りかけ。将来的にこちらを使って受講状況を学習管理システムからAPI経由で受け取れるようにする。
-/** 受講状況. */
-export type TrainingStatus = {
-  startDate: Date;
-  endDate?: Date;
-  feedbacks?: { date: Date; comment: string }[];
-};
+/** ユーザステータス. */
+export type UserStatus = (typeof UserStatusConst)[keyof typeof UserStatusConst];
 
 /** 資格情報. */
 export type Qualification = (typeof QualificationOptions)[number];
@@ -116,7 +111,6 @@ export type SkillLevel = {
   level: number;
 };
 
-// TODO: 持たせるかどうか検討：ユーザーレベル（Progateとかデュオリンゴみたいなやつ）,
 /** ユーザ情報. */
 export type User = Entity<{
   /** 名前. */
@@ -131,6 +125,8 @@ export type User = Entity<{
   birthDate: Date;
   /** プロフィール画像のパス. */
   avatarImagePath: string | undefined;
+  /** ステータス. */
+  status: UserStatus;
   /** MBTI. */
   mbti: Mbti;
   /** 受講開始日（入社日）. */

@@ -8,6 +8,7 @@ const Home = () => {
     <div className="flex flex-col items-center gap-8">
       <h1 className="text-heading-h1">Welcome!</h1>
       {/* 後でちゃんとしたボタンとかに切り替えること。 */}
+      <Button label="ユーザー一覧表示テスト" isWide={false} onClick={() => navigate('/users')} />
       <Button label="ユーザー情報表示テスト" isWide={false} onClick={() => navigate('/profile')} />
       {/* ここに統計情報を表示できるとベスト。表示のタイミングでバックエンド経由でデータをfetchする */}
       <div className="min-w-192 flex flex-col items-center gap-4">
