@@ -1,122 +1,160 @@
-# スキルシート自動生成アプリ
+# skill-sheet-maker
 
-## 概要
+スキルシートを簡単に作りたいので実装した社員を管理するためのアプリです。
 
-このプロジェクトは、スキルシートを自動生成するためのシングルページアプリケーション（SPA）です。初期 PoC（概念実証）として、以下の要件に基づいて開発されています。
+Rust ベースのデスクトップアプリケーションフレームワークである Tauri を使用して作っています。
+クロスプラットフォーム対応も視野に入れています。
 
-## 特徴
-
-- **フロントエンド SPA**: React、TypeScript、TailwindCSS を使用して構築されています。
-- **データ管理**: ローカルの JSON ファイルでデータを保存および読み込みます。
-- **PDF 出力**: ひな型レイアウトを完全に再現し、A4 サイズで会社ロゴ画像を反映した PDF を生成します。
-- **Excel 出力**: SheetJS を利用し、PDF レイアウトを可能な限り再現した Excel ファイルを生成します。
-- **一括 ZIP 出力**: 複数のスキルシートを一括で ZIP ファイルとして出力します。
-- **バックエンドレス**: アプリケーションはローカルで完結し、バックエンドを必要としません。Web 化の際は Vercel への即時デプロイに対応可能です。
+フロントは TypeScript で、React を使用しています。
 
 ## 技術スタック
 
-- **フレームワーク**: React
-- **言語**: TypeScript
-- **CSS フレームワーク**: TailwindCSS
-- **PDF 生成**: `@react-pdf/renderer`
-- **Excel 生成**: `sheetjs`
-- **ZIP 圧縮**: `jszip`
-- **アイコン**: `react-icons` (Devicon を含む)
-- **ファイルダウンロード**: `file-saver`
-- **ルーティング**: `react-router-dom`
+- Tauri v2
+- React 18.3.1
+- Vite 6.3.1
+- TypeScript
+- tailwindcss v4.1
+- daisyUI 5.0.35
+- SQLite 5.1.7
+- Node v22.14.0
 
-## データ構造
+## 推奨される IDE 設定
 
-ユーザーデータは以下の JSON 形式を参考にしています。
+VSCode を使用して開発することを前提としています。
 
-```json
-{
-  "users": [
-    {
-      "id": "uuid",
-      "name": "イニシャルまたはフルネーム",
-      "affiliation": "所属",
-      "age": 29,
-      "gender": "男/女/回答しない",
-      "qualification": "例: 基本情報技術者",
-      "education": "最終学歴",
-      "work_term": "稼働(現職年数等)",
-      "station": "最寄り駅",
-      "speciality": "得意分野",
-      "strong_skills": "得意技術",
-      "pr": "自己PR",
-      "projects": [
-        {
-          "id": "uuid",
-          "period": "2020年4月 - 2020年10月",
-          "title": "プロジェクト名/案件名",
-          "team_size": 6,
-          "server": "Mac",
-          "os": "macOS",
-          "db": "SQLite",
-          "network": "-",
-          "package": "-",
-          "tools": "Xcode 11, Android Studio",
-          "languages": [
-            { "name": "Swift", "version": "5" },
-            { "name": "Java", "version": "8" }
-          ],
-          "phases": [ "要件定義", "基本設計", "実装・単体", ... ],
-          "role": "リーダー/メンバー等",
-          "scale": "例:10人月",
-          "details": "業務内容、成果物などの詳細(自由記述、複数行)"
-        }
-      ]
-    }
-  ],
-  "company_logo": "Base64String"
-}
+開発をする場合は拡張機能として、以下の２つを導入してください。
+
+- [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode)
+- [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+
+## 起動
+
+以下のコマンドでアプリケーションのローカルでのテスト起動ができます。
+
+```bash
+npm run tauri dev
 ```
 
-## 主要機能
+怒られた場合は`npm install`をして、パッケージをインストールしてください。
 
-### トップ画面
+---
 
-- 新規スキルシート作成 / JSON 読込
-- ユーザー一覧 / 検索 / 選択
+## データベース
 
-### 編集画面
+### データベースの初期化について
 
-- 基本情報入力 (必須・任意項目あり)
-- プロジェクト経歴の追加・編集 (開発環境、担当工程、技術名/バージョン入力、Devicon 表示対応)
-- 会社ロゴ画像のアップロード
-- 編集内容のローカル保存 (ドラフト機能は必須ではないが実装容易)
+本プロジェクトでは、データベースとして SQLite を使用しています。`users.db` は各開発者ごとに生成するデータファイルであり、リポジトリには含まれていません（`.gitignore`に登録済みです）。
 
-### プレビュー / 出力画面
+リポジトリをpullしてきた後、以下のコマンドを実行することで、users.dbを作成できます。
 
-- PDF プレビュー (印刷イメージそのまま表示)
-- PDF 出力 (ロゴ・項目順・工程表示含む)
-- Excel 出力
-- 一括 PDF 出力 + ZIP ダウンロード (複数人分選択して DL)
+```bash
+node db/init_db.js
+```
 
-## 開発環境のセットアップ
+package.jsonにコマンドを登録しているので、次のコマンドでも`init-db.js`を実行できます。
 
-1. プロジェクトのクローン:
-   ```bash
-   git clone [リポジトリのURL]
-   cd skill-sheet-maker
+```bash
+npm run init-db
+```
+
+コマンドを実行することで動かすファイル：**init_db.js** と **schema.sql**
+
+→ `./db` ディレクトリ内に配置されています。
+
+実行することで以下のファイルが生成されます。
+
+- **users.db**：プロジェクト直下に生成されます。
+
+### データベーススキーマの更新手順
+
+以下の手順で、新しいテーブル追加やカラム変更などのスキーマ更新を行います。SQLiteとSQLxを利用したマイグレーション機能を使います。
+
+1. **環境変数を確認**  
+   プロジェクトルート（`Cargo.toml` と同じ階層）にある `.env` に、データベース接続先が正しく書かれているかを確認します。
+
+   ```dotenv
+   # 例: SQLite ファイルをルート直下の users.db に置く
+   DATABASE_URL="sqlite://./users.db"
    ```
-2. 依存関係のインストール:
+
+2. **新しいマイグレーションファイルを作成**
+   Tauri 側ディレクトリ（通常は src-tauri/）に移動して、マイグレーションファイルを追加します。
+
+   ```bash
+   cd src-tauri
+   sqlx migrate add <YYYYMMDDHHMMSS>\_説明的な名前
+   ```
+
+   すると migrations/ 配下にタイムスタンプ付きフォルダが作成され、その中に up.sql／down.sql が空ファイルで置かれます。
+
+3. **`up.sql`／`down.sql`を編集**
+
+   `up.sql`に「適用時」の SQL（例：ALTER TABLE users ADD COLUMN new_col TEXT;）を記述する。
+
+   down.sql に「ロールバック時」の SQL（例：`ALTER TABLE users DROP COLUMN new_col;` など）を記述
+
+4. **マイグレーションを実行**
+   `up.sql`をすべて適用して、実際の `users.db`を更新します。
+
+   ```bash
+   sqlx migrate run
+   ```
+
+   正常に終わると `__sqlx_migrations`テーブルに新しいバージョンが記録されます。
+
+5. **（オフラインマクロ利用時のみ）クエリチェックデータの再生成**
+   SQLx のマクロ（query! や query_as!）をオフラインモードで使っている場合、マイグレーション後にデータベーススキーマの参照ファイルを更新します。
+
+```bash
+# プロジェクトルートで
+SQLX_OFFLINE=1 cargo sqlx prepare -- --lib
+```
+
+6. **アプリケーションの再ビルド・再起動**
+
+   - Rust 側を再ビルド（`cd src-tauri && cargo build`）
+   - フロントエンド＆Tauri を再起動（`npm run tauri dev` など）
+
+7. **ロールバック（必要な場合のみ）**
+   ひとつ前のマイグレーションまで戻したいとき：
+
+   ```bash
+   sqlx migrate revert
+   ```
+
+   特定ステップ分だけ戻す場合：
+
+   ```bash
+   sqlx migrate revert --rev <ステップ数>
+   ```
+
+> 💡**Tips**
+> マイグレーションファイルは必ず Git 管理下に置き、**schema.sql ではなく migrations/ フォルダ内の up.sql を編集してください。**
+>
+> こうすることで、誰でも同じ手順でローカル DB を再現できます。
+
+---
+
+## ファイルの配置
+
+React の実装では、Bulletproof-React のディレクトリ構成を参考にしてファイルの配置を行います。
+[React プロジェクトのための新しい道: Bulletproof-React ディレクトリ構造の探求](https://qiita.com/konta74315/items/c91c3b6876cef70bf853)
+
+## 初期化手順
+
+1. **依存パッケージのインストール**  
+   プロジェクトのルートディレクトリで以下のコマンドを実行してください。
+
    ```bash
    npm install
    ```
-3. 開発サーバーの起動:
+
+2. **データベースの初期化**
+
+   リポジトリをクローンしてすぐはデータベースのファイルがないので、以下のコマンドを実行してファイルを生成します。
+
    ```bash
-   npm run dev
+   node db/init_db.js
+   または
+   npm run init-db
    ```
-   ブラウザで `http://localhost:5173` (または表示される URL) にアクセスしてください。
-
-## ビルド
-
-本番環境用にビルドするには、以下のコマンドを実行します。
-
-```bash
-npm run build
-```
-
-ビルドされたファイルは `dist` ディレクトリに生成されます。

@@ -1,15 +1,20 @@
-import { Routes, Route } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import EditPage from './pages/EditPage';
+import Profile from '@/app/routes/Profile';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Layout from './app/Layout';
+import Home from './app/routes/Home';
+import { sampleUsers } from './test/sampleUser';
 
-function App() {
+const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/edit" element={<EditPage />} />
-      <Route path="/edit/:id" element={<EditPage />} />
-    </Routes>
+    <BrowserRouter>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/profile" element={<Profile user={sampleUsers[0]} />} />
+        </Routes>
+      </Layout>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
