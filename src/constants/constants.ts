@@ -10,3 +10,5 @@ export const UserStatusConst = {
   onLeave: '休職中',
   retired: '離職済み',
 } as const;
+
+export type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error' | 'ghost' | 'link';

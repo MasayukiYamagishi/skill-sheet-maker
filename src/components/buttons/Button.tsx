@@ -1,19 +1,24 @@
+import { ButtonVariant } from '@/constants/constants';
 import classNames from 'classnames';
 import { FC } from 'react';
 
 type ButtonProps = {
   label: string;
-  isWide: boolean;
+  isWide?: boolean;
   disabled?: boolean;
   onClick: () => void;
+  variant?: ButtonVariant;
+  isOutline?: boolean;
 };
 
 // ボタンをクリックしたときに発火するイベントをPropsで渡せるようにする。
-const Button: FC<ButtonProps> = ({ label, isWide, disabled, onClick }) => {
+const Button: FC<ButtonProps> = ({ label, isWide, disabled, onClick, variant, isOutline }) => {
   const buttonClassNames = classNames({
     btn: true,
     'btn-wide': isWide,
     'drop-shadow-sm': true,
+    [`btn-${variant}`]: variant,
+    'btn-outline': isOutline,
   });
 
   return (
