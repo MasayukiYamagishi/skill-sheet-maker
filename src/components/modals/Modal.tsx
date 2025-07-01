@@ -1,43 +1,48 @@
-// src/components/Modal.tsx
-import { FC, ReactNode, useRef } from 'react';
-import Button from '../buttons/Button';
-import IconButton from '../buttons/IconButton';
+import IconButton from '@/components/buttons/IconButton';
+import React, { useEffect, useRef } from 'react';
 
-export type ModalProps = {
-  /** モーダルを開くボタンのラベル. */
-  buttonLabel: string;
-  /** モーダルのタイトル. */
-  title: string;
-  /** モーダル内部に表示するコンテンツ */
-  children: ReactNode;
-  /** ボタンを広くするかどうか. */
-  isWide?: boolean;
-};
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+}
 
-const Modal: FC<ModalProps> = ({ buttonLabel, title, children, isWide = false }) => {
-  const dialogRef = useRef<HTMLDialogElement>(null);
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
+  const modalRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const modalElement = modalRef.current;
+    if (modalElement) {
+      if (isOpen) {
+        modalElement.showModal();
+      } else {
+        modalElement.close();
+      }
+    }
+  }, [isOpen]);
+
+  const handleClose = () => {
+    onClose();
+  };
 
   return (
-    <>
-      <Button label={buttonLabel} isWide={isWide} onClick={() => dialogRef.current?.showModal()} />
-      <dialog ref={dialogRef} className="modal backdrop-blur-sm">
-        <form method="dialog" className="modal-backdrop">
-          <button>close</button>
+    <dialog
+      ref={modalRef}
+      className="modal modal-bottom sm:modal-middle backdrop-blur-sm"
+      onCancel={handleClose}
+    >
+      <div className="modal-box">
+        {/* Close button */}
+        <form method="dialog">
+          <IconButton icon="close" onClick={handleClose} className="absolute right-2 top-2" />
         </form>
-        <div className="modal-box bg-base-100 text-base-content">
-          <div className="modal-action mt-0">
-            <IconButton
-              icon="close"
-              onClick={() => dialogRef.current?.close()}
-              className="btn-sm absolute right-2 top-2"
-            />
-            {/* <Button label="閉じる" isWide={false} onClick={() => dialogRef.current?.close()} /> */}
-          </div>
-          <h3 className="font-bold text-lg mb-4">{title}</h3>
-          <div className="mb-4">{children}</div>
-        </div>
-      </dialog>
-    </>
+        {children}
+      </div>
+      {/* Click outside to close */}
+      <form method="dialog" className="modal-backdrop">
+        <button onClick={handleClose}>close</button>
+      </form>
+    </dialog>
   );
 };
 
