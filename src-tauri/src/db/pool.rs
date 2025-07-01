@@ -1,9 +1,12 @@
-use sqlx::sqlite::SqlitePoolOptions;
+use sqlx::postgres::PgPoolOptions;
+use sqlx::PgPool;
 
-pub async fn init_pool() -> anyhow::Result<sqlx::SqlitePoolOptions> {
-    let pool = SqlitePoolOptions::new()
+pub async fn init_pool() -> anyhow::Result<PgPool> {
+    let database_url = std::env::var("DATABASE_URL")
+        .expect("DATABASE_URL must be set");
+    let pool = PgPoolOptions::new()
         .max_connections(5)
-        .connect("sqlite://users.db")
+        .connect(&database_url)
         .await?;
     Ok(pool)
 }

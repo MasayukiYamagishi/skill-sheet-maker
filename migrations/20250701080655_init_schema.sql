@@ -1,3 +1,4 @@
+-- Add migration script here
 -- ユーザーテーブル
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
