@@ -1,8 +1,7 @@
-import type { User } from '@/types/types';
-import { GenderConst } from '@/constants/constants';
+import { GenderConst, UserStatusConst } from '@/constants/constants';
 import { MbtiCodeConst, MbtiIdentityConst } from '@/constants/mbtiDetails';
-import { SkillOptions } from '@/constants/skills';
 import { QualificationOptions } from '@/constants/qualifications';
+import type { User } from '@/types/types';
 
 /**
  * サンプルユーザー一覧
@@ -26,6 +25,9 @@ export const sampleUsers: User[] = [
     age: 28,
     birthDate: new Date('1996-07-15'),
     avatarImagePath: './src/test/ali-morshedlou-WMD64tMfc4k-unsplash.jpg',
+
+    // ユーザステータス
+    status: UserStatusConst.available,
 
     // MBTI
     mbti: {
@@ -87,6 +89,9 @@ export const sampleUsers: User[] = [
     age: 32,
     birthDate: new Date('1991-02-20'),
     avatarImagePath: undefined,
+
+    // ユーザステータス
+    status: UserStatusConst.inProject,
 
     // MBTI
     mbti: {
