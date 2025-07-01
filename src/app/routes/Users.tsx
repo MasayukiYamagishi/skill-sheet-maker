@@ -71,10 +71,11 @@ const Users = () => {
         {sampleUsers.map((user) => (
           <div
             key={user.uuid}
-            className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-200"
+            className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+            onClick={() => navigate(`/profile/${user.uuid}`)}
           >
             <div className="card-body p-3 flex flex-row items-center gap-4">
-              <div className="w-auto">
+              <div className="w-auto" onClick={(e) => e.stopPropagation()}>
                 <input
                   type="checkbox"
                   className="checkbox"
@@ -105,7 +106,7 @@ const Users = () => {
                   <div className="badge badge-accent">{user.status}</div>
                 )}
               </div>
-              <div className="w-2/12 flex justify-center">
+              <div className="w-2/12 flex justify-center" onClick={(e) => e.stopPropagation()}>
                 <IconLabelButton
                   icon="download"
                   label="PDF出力"
