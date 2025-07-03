@@ -24,7 +24,7 @@ export const sampleUsers: User[] = [
     gender: GenderConst.male,
     age: 28,
     birthDate: new Date('1996-07-15'),
-    avatarImagePath: './src/test/ali-morshedlou-WMD64tMfc4k-unsplash.jpg',
+    avatarImagePath: '/img/felipe-coelho-RLVMtirfR1I-unsplash.jpg',
 
     // ユーザステータス
     status: UserStatusConst.available,
