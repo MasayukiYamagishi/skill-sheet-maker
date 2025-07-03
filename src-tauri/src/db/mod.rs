@@ -1,5 +1,4 @@
 pub mod pool;
-pub mod repo;
+pub mod users;
 
 pub use pool::*;
-pub use repo::*;
