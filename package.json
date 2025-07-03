@@ -7,12 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri",
-    "init-db": "node db/init-db.js",
-    "migrate:schema": "node scripts/update-migrations.js",
-    "migrate:prod": "sqlx migrate run --database-url $PROD_DATABASE_URL",
-    "migrate:test": "sqlx migrate run --database-url $TEST_DATABASE_URL",
-    "migrate:all": "npm run migrate:schema && npm run migrate:prod && npm run migrate:test"
+    "tauri": "tauri"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
