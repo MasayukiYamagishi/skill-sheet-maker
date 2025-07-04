@@ -1,4 +1,4 @@
-import { ButtonVariant } from '@/constants/constants';
+import { ButtonVariant } from '@/types/types';
 import classNames from 'classnames';
 import { FC } from 'react';
 

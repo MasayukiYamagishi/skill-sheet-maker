@@ -1,0 +1,34 @@
+[
+  {
+    "id": "skill_heroku",
+    "label": "Heroku",
+    "description": "PaaS型クラウドアプリケーションプラットフォーム。",
+    "deviconId": "heroku",
+    "categoryId": "cloud",
+    "tags": ["cloud", "paas"]
+  },
+  {
+    "id": "skill_aws",
+    "label": "AWS",
+    "description": "Amazonが提供するクラウドサービス群。",
+    "deviconId": "amazonwebservices",
+    "categoryId": "cloud",
+    "tags": ["cloud", "aws"]
+  },
+  {
+    "id": "skill_googlecloud",
+    "label": "Google Cloud Platform",
+    "description": "Google提供のクラウドサービス群。",
+    "deviconId": "googlecloud",
+    "categoryId": "cloud",
+    "tags": ["cloud", "gcp"]
+  },
+  {
+    "id": "skill_azure",
+    "label": "Microsoft Azure",
+    "description": "Microsoftが提供するエンタープライズ向けクラウドサービス。",
+    "deviconId": "azure",
+    "categoryId": "cloud",
+    "tags": ["cloud", "microsoft"]
+  }
+]
