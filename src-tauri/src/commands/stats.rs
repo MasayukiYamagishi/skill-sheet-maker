@@ -1,4 +1,3 @@
-use tauri::command;
 use serde::Serialize;
 
 // DBアクセス用のモジュール
@@ -7,12 +6,12 @@ use serde::Serialize;
 // フロントに返却する統計情報の型
 #[derive(Serialize)]
 pub struct Stats {
-    // 現在の登録ユーザ総数
-    pub total_users: i64,
-    // 今月のユーザ増減（前月比）
-    pub monthly_change: i64,
-    // 過去 n ヵ月分の年月とユーザ数のペア
-    pub trend: Vec<(String, i64)>,
+  // 現在の登録ユーザ総数
+  pub total_users: i64,
+  // 今月のユーザ増減（前月比）
+  pub monthly_change: i64,
+  // 過去 n ヵ月分の年月とユーザ数のペア
+  pub trend: Vec<(String, i64)>,
 }
 
 // TODO: 統計情報を集計するためのAPIとかが作れたら実装を再開する。

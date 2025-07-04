@@ -1,3 +1,4 @@
 pub mod stats;
+pub mod users;
 
-pub use stats::*;
+pub use users::*;

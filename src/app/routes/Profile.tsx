@@ -1,5 +1,5 @@
 import Button from '@/components/buttons/Button';
-import CirclePhotoCardProps from '@/components/CirclePhotoCard';
+import { default as CirclePhotoCard } from '@/components/CirclePhotoCard';
 import { Icon } from '@/components/icons/Icon';
 import { sampleUsers } from '@/test/sampleUser';
 import { chunkArray } from '@/utils/array';
@@ -49,7 +49,7 @@ const Profile = () => {
         <Button label="ユーザ一覧へ戻る" isWide={false} onClick={() => navigate('/users')} />
       </div>
       <div className="min-w-192 w-fit flex flex-row justify-center content-center items-start rounded-lg gap-8 p-4  bg-white drop-shadow-lg">
-        <CirclePhotoCardProps src={user.avatarImagePath} altText="avatar image" size={128} />
+        <CirclePhotoCard src={user.avatarImagePath} altText="avatar image" size={128} />
         <div className="flex flex-col gap-2">
           <p className="text-sm">ID: {user.uuid}</p>
           <div className="flex flex-row justify-center content-center items-start gap-24">
