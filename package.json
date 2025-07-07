@@ -10,7 +10,10 @@
     "tauri": "tauri",
     "generate:skills-sql": "node scripts/generate-skill-inserts.cjs",
     "insert:skills-test": "psql -d users_test -U devuser -f ./sql/insert_skills.sql",
-    "insert:skills-prod": "psql -d users_prod -U devuser -f ./sql/insert_skills.sql"
+    "insert:skills-prod": "psql -d users_prod -U devuser -f ./sql/insert_skills.sql",
+    "generate-qualification-inserts": "node scripts/generate-qualification-inserts.cjs",
+    "insert:qualifications-test": "psql -d users_test -U devuser -f ./sql/insert_qualifications.sql",
+    "insert:qualifications-prod": "psql -d users_prod -U devuser -f ./sql/insert_qualifications.sql"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
