@@ -1,0 +1,5 @@
+-- ダミーユーザーのINSERT
+\encoding UTF8;
+-- users（ユーザ情報）
+INSERT INTO users (user_identifier, name, name_kana, birth_date, gender, email, mbti_code, joined_at, retired_at, final_education, status, affiliation, avatar_path, github_url, pr_text, specialty, tech_strength, sales_comment, toeic_score, other_skills) VALUES ('A001', '山田太郎', 'ヤマダタロウ', '1990-04-15', 'male', 'taro.yamada@example.com', 'INTJ', '2015-06-01', NULL, '東京大学 工学部 卒業', 'inProject', '第1開発部', '/img/avatar/taro.png', 'https://github.com/taroyamada', 'フルスタックエンジニアとして、幅広い開発業務に従事しています。', 'Webアプリケーション開発', 'TypeScript, Node.js, PostgreSQL, React', '論理的かつ誠実な人物。クライアント評価も高い。', 900, 'Docker, GCP') ON CONFLICT (user_identifier) DO NOTHING;
+INSERT INTO users (user_identifier, name, name_kana, birth_date, gender, email, mbti_code, joined_at, retired_at, final_education, status, affiliation, avatar_path, github_url, pr_text, specialty, tech_strength, sales_comment, toeic_score, other_skills) VALUES ('A002', '佐藤花子', 'サトウハナコ', '1997-12-31', 'female', 'hanako.sato@example.com', NULL, NULL, NULL, NULL, 'available', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ON CONFLICT (user_identifier) DO NOTHING;
