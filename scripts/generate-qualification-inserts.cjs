@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// ファイルパスの設定
-const qualificationJsonPath = path.join(
+// 入力jsonファイルのパス
+const inputPath = path.join(
   __dirname,
   '..',
   'public',
@@ -10,24 +10,30 @@ const qualificationJsonPath = path.join(
   'qualifications',
   'qualifications.json',
 );
-const outputSqlPath = path.join(__dirname, '..', 'sql', 'insert_qualifications.sql');
+// 出力先
+const outputPath = path.join(__dirname, '..', 'sql', 'insert_qualifications.sql');
 
-// JSONファイルを読み込み
-const qualifications = JSON.parse(fs.readFileSync(qualificationJsonPath, 'utf-8'));
+// JSON読み込み
+const qualifications = JSON.parse(fs.readFileSync(inputPath, 'utf-8'));
 
-// SQL生成関数
-function escape(str) {
-  if (!str) return '';
-  return str.replace(/'/g, "''").replace(/\n/g, '\\n');
+function escapeSQL(str) {
+  if (str === undefined || str === null) return '';
+  return str.replace(/\\/g, '\\\\').replace(/'/g, "''").replace(/\n/g, '\\n').replace(/\r/g, '\\r');
 }
 
-// 1行目でエンコーディング指定（Postgres推奨）
-let sql = `\\encoding UTF8;\n-- qualifications\n`;
+let sql = `\\encoding UTF8;
+-- qualifications INSERT
+`;
 
 for (const q of qualifications) {
-  sql += `INSERT INTO qualifications (name, description, is_national) VALUES ('${escape(q.name)}', '${escape(q.description)}', ${q.is_national}) ON CONFLICT (name) DO NOTHING;\n`;
+  sql += `INSERT INTO qualifications (id, name, description, is_national) VALUES (
+    '${escapeSQL(q.id)}',
+    '${escapeSQL(q.name)}',
+    '${escapeSQL(q.description || '')}',
+    ${q.is_national ? 'true' : 'false'}
+  ) ON CONFLICT (id) DO NOTHING;\n`;
 }
 
-// 書き出し
-fs.writeFileSync(outputSqlPath, sql);
+// ファイル書き出し
+fs.writeFileSync(outputPath, sql, 'utf-8');
 console.log('insert_qualifications.sql generated!');

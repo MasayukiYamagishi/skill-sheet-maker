@@ -14,9 +14,11 @@ Rust ベースのデスクトップアプリケーションフレームワーク
 - Vite 6.3.1
 - TypeScript
 - tailwindcss v4.1
-- daisyUI 5.0.35
-- SQLite 5.1.7
+- daisyUI 5.0.43
 - Node v22.14.0
+- PostgreSQL
+- sqlx v0.6
+- tokio v1
 
 ## 推奨される IDE 設定
 
@@ -39,7 +41,27 @@ npm run tauri dev
 
 ---
 
-## データベースの更新
+## データベース
+
+### データベースの構成
+
+本プロジェクトではテスト環境用のusers_testと本番環境用のusers_prodという２つのDBを用意しています。
+
+テーブルの構成は`schema.sql`をドキュメンテーション用途で残してあるので、そちらをご覧ください。
+
+データベースの内容をまっさらにした場合、以下の順番でデータを流し込む必要があります。
+
+1. user
+2. skill_categories
+3. skill_tags
+4. skills, qualifications（順不同）
+5. career_histories
+6. user_skills & user_qualifications
+7. career_skills & career_process
+
+`psql`コマンドを使ってデータを流し込む場合、上記5,6,7番目の手順ではデータベースの中身を覗いてUUIDで採番されたidの値を確認する必要があるので注意が必要です。
+
+### データベースの更新
 
 本プロジェクトでは、**PostgreSQL + sqlx + tokio-postgres**でDBを構築しています。
 sqlxを使うことで、DBスキーマの履歴がすべてマイグレーションで管理されています。

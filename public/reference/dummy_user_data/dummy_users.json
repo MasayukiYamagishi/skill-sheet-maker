@@ -13,7 +13,7 @@
     "status": "inProject",
     "affiliation": "第1開発部",
     "avatar_path": "/img/avatar/taro.png",
-    "github_url": "https://github.com/taroyamada",
+    "github_url": "https://example.com/taroyamada",
     "pr_text": "フルスタックエンジニアとして、幅広い開発業務に従事しています。",
     "specialty": "Webアプリケーション開発",
     "tech_strength": "TypeScript, Node.js, PostgreSQL, React",
@@ -42,5 +42,27 @@
     "sales_comment": null,
     "toeic_score": null,
     "other_skills": null
+  },
+  {
+    "user_identifier": "A003",
+    "name": "高橋次郎",
+    "name_kana": "タカハシジロウ",
+    "birth_date": "1985-09-21",
+    "gender": "other",
+    "email": "jiro.takahashi@example.com",
+    "mbti_code": "ENTP",
+    "joined_at": "2010-10-01",
+    "retired_at": null,
+    "final_education": "大阪大学 情報科学部 卒業",
+    "status": "onLeave",
+    "affiliation": "研究開発部",
+    "avatar_path": "/img/avatar/jiro.png",
+    "github_url": "https://example.com/jiro",
+    "pr_text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ac velit eu nunc dictum dictum. Etiam efficitur, orci at convallis convallis, sapien felis imperdiet risus, ac pretium turpis libero et sem. In scelerisque elit vitae dui scelerisque, vitae facilisis tortor hendrerit. Praesent gravida, ex ac laoreet luctus, urna arcu fermentum sapien, at commodo dolor erat sed leo. Vestibulum pretium, sem nec faucibus dictum, risus sem dictum erat, nec dictum urna nulla eget eros. Cras euismod luctus nisl, vitae dictum lacus fermentum non. Nam nec velit dictum, dictum sem nec, porta nunc. Quisque eu nunc libero. Pellentesque sit amet urna eget augue gravida efficitur. Vestibulum commodo, nisi at blandit facilisis, nisi orci ultricies neque, eget gravida magna risus sed sem. Vestibulum sit amet euismod dolor, nec sagittis augue.",
+    "specialty": "AI・データ分析・自然言語処理",
+    "tech_strength": "Python, PyTorch, FastAPI, PostgreSQL, Docker, Kubernetes",
+    "sales_comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus maximus, massa in rutrum tincidunt, nisi urna cursus nulla, et porta erat arcu in metus. Duis faucibus, risus a consequat dignissim, sem purus accumsan massa, eu laoreet ipsum sapien non urna. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Vestibulum sollicitudin, tortor ac dictum cursus, nulla mauris tempus urna, ut fermentum ex mi nec purus.",
+    "toeic_score": 835,
+    "other_skills": "GCP, AWS, Terraform, CircleCI"
   }
 ]

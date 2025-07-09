@@ -41,6 +41,8 @@ INSERT INTO skill_tags (id, label) VALUES ('rag', 'rag') ON CONFLICT (id) DO NOT
 INSERT INTO skill_tags (id, label) VALUES ('retrieval', 'retrieval') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skill_tags (id, label) VALUES ('stack', 'stack') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skill_tags (id, label) VALUES ('data', 'data') ON CONFLICT (id) DO NOTHING;
+INSERT INTO skill_tags (id, label) VALUES ('nlp', 'nlp') ON CONFLICT (id) DO NOTHING;
+INSERT INTO skill_tags (id, label) VALUES ('ml', 'ml') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skill_tags (id, label) VALUES ('cicd', 'cicd') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skill_tags (id, label) VALUES ('cloud', 'cloud') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skill_tags (id, label) VALUES ('automation', 'automation') ON CONFLICT (id) DO NOTHING;
@@ -83,7 +85,6 @@ INSERT INTO skill_tags (id, label) VALUES ('visualization', 'visualization') ON 
 INSERT INTO skill_tags (id, label) VALUES ('dashboard', 'dashboard') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skill_tags (id, label) VALUES ('boosting', 'boosting') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skill_tags (id, label) VALUES ('statistics', 'statistics') ON CONFLICT (id) DO NOTHING;
-INSERT INTO skill_tags (id, label) VALUES ('nlp', 'nlp') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skill_tags (id, label) VALUES ('notebook', 'notebook') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skill_tags (id, label) VALUES ('interactive', 'interactive') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skill_tags (id, label) VALUES ('design', 'design') ON CONFLICT (id) DO NOTHING;
@@ -160,6 +161,7 @@ INSERT INTO skill_tags (id, label) VALUES ('nocode', 'nocode') ON CONFLICT (id) 
 INSERT INTO skill_tags (id, label) VALUES ('apple', 'apple') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skill_tags (id, label) VALUES ('communication', 'communication') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skill_tags (id, label) VALUES ('projectmanagement', 'projectmanagement') ON CONFLICT (id) DO NOTHING;
+INSERT INTO skill_tags (id, label) VALUES ('iac', 'iac') ON CONFLICT (id) DO NOTHING;
 
 -- skills
 INSERT INTO skills (id, label, description, devicon_id, category_id) VALUES ('skill_chatgpt', 'ChatGPT', 'OpenAI開発の大規模言語モデルAIチャットボット。', '', 'ai') ON CONFLICT (id) DO NOTHING;
@@ -187,6 +189,7 @@ INSERT INTO skills (id, label, description, devicon_id, category_id) VALUES ('sk
 INSERT INTO skills (id, label, description, devicon_id, category_id) VALUES ('skill_openai', 'OpenAI API', 'GPTシリーズやDALL·EなどのAPIを提供するプラットフォーム。', '', 'ai') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skills (id, label, description, devicon_id, category_id) VALUES ('skill_ragstack', 'RAGStack', 'Retrieval Augmented Generation（RAG）構成のOSSスタック。', '', 'ai') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skills (id, label, description, devicon_id, category_id) VALUES ('skill_llamaindex', 'LlamaIndex', 'LLMとデータ接続を簡単にするためのAIフレームワーク。', '', 'ai') ON CONFLICT (id) DO NOTHING;
+INSERT INTO skills (id, label, description, devicon_id, category_id) VALUES ('skill_bert', 'BERT', '自然言語処理分野で広く使われるGoogle開発の事前学習済みAIモデル。', '', 'ai') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skills (id, label, description, devicon_id, category_id) VALUES ('skill_circleci', 'CircleCI', 'クラウド型の継続的インテグレーションサービス。', 'circleci', 'cicd') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skills (id, label, description, devicon_id, category_id) VALUES ('skill_githubactions', 'GitHub Actions', 'GitHubが提供するCI/CDワークフロー自動化サービス。', 'githubactions', 'cicd') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skills (id, label, description, devicon_id, category_id) VALUES ('skill_githubactionsrunner', 'GitHub Actions Runner', 'GitHub Actionsのワークフローを実行するエージェント。', '', 'cicd') ON CONFLICT (id) DO NOTHING;
@@ -395,6 +398,8 @@ INSERT INTO skills (id, label, description, devicon_id, category_id) VALUES ('sk
 INSERT INTO skills (id, label, description, devicon_id, category_id) VALUES ('skill_trello', 'Trello', 'タスク・プロジェクト管理用のカンバン型ツール。', 'trello', 'tool') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skills (id, label, description, devicon_id, category_id) VALUES ('skill_bitbucket', 'Bitbucket', 'Atlassian社提供のGit/Mercurialホスティングサービス。', 'bitbucket', 'tool') ON CONFLICT (id) DO NOTHING;
 INSERT INTO skills (id, label, description, devicon_id, category_id) VALUES ('skill_pycharm', 'PyCharm', 'Python開発に特化したJetBrains製IDE。', 'pycharm', 'tool') ON CONFLICT (id) DO NOTHING;
+INSERT INTO skills (id, label, description, devicon_id, category_id) VALUES ('skill_kubernetes', 'Kubernetes', '大規模コンテナオーケストレーションのためのオープンソースシステム。', 'kubernetes', 'tool') ON CONFLICT (id) DO NOTHING;
+INSERT INTO skills (id, label, description, devicon_id, category_id) VALUES ('skill_terraform', 'Terraform', 'インフラストラクチャをコードで管理できる構成管理ツール。', 'terraform', 'tool') ON CONFLICT (id) DO NOTHING;
 
 -- skill_tag_map
 INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_chatgpt', 'ai') ON CONFLICT DO NOTHING;
@@ -477,6 +482,9 @@ INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_llamaindex', 'ai') O
 INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_llamaindex', 'framework') ON CONFLICT DO NOTHING;
 INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_llamaindex', 'llm') ON CONFLICT DO NOTHING;
 INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_llamaindex', 'data') ON CONFLICT DO NOTHING;
+INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_bert', 'ai') ON CONFLICT DO NOTHING;
+INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_bert', 'nlp') ON CONFLICT DO NOTHING;
+INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_bert', 'ml') ON CONFLICT DO NOTHING;
 INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_circleci', 'cicd') ON CONFLICT DO NOTHING;
 INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_circleci', 'cloud') ON CONFLICT DO NOTHING;
 INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_githubactions', 'cicd') ON CONFLICT DO NOTHING;
@@ -994,3 +1002,9 @@ INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_bitbucket', 'hosting
 INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_pycharm', 'tool') ON CONFLICT DO NOTHING;
 INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_pycharm', 'ide') ON CONFLICT DO NOTHING;
 INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_pycharm', 'jetbrains') ON CONFLICT DO NOTHING;
+INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_kubernetes', 'tool') ON CONFLICT DO NOTHING;
+INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_kubernetes', 'cloud') ON CONFLICT DO NOTHING;
+INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_kubernetes', 'container') ON CONFLICT DO NOTHING;
+INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_terraform', 'tool') ON CONFLICT DO NOTHING;
+INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_terraform', 'iac') ON CONFLICT DO NOTHING;
+INSERT INTO skill_tag_map (skill_id, tag_id) VALUES ('skill_terraform', 'cloud') ON CONFLICT DO NOTHING;

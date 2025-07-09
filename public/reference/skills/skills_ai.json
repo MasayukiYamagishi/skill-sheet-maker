@@ -198,5 +198,13 @@
     "deviconId": "",
     "categoryId": "ai",
     "tags": ["ai", "framework", "llm", "data"]
+  },
+  {
+    "id": "skill_bert",
+    "label": "BERT",
+    "description": "自然言語処理分野で広く使われるGoogle開発の事前学習済みAIモデル。",
+    "deviconId": "",
+    "categoryId": "ai",
+    "tags": ["ai", "nlp", "ml"]
   }
 ]

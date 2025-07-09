@@ -142,5 +142,21 @@
     "deviconId": "pycharm",
     "categoryId": "tool",
     "tags": ["tool", "ide", "jetbrains"]
+  },
+  {
+    "id": "skill_kubernetes",
+    "label": "Kubernetes",
+    "description": "大規模コンテナオーケストレーションのためのオープンソースシステム。",
+    "deviconId": "kubernetes",
+    "categoryId": "tool",
+    "tags": ["tool", "cloud", "container"]
+  },
+  {
+    "id": "skill_terraform",
+    "label": "Terraform",
+    "description": "インフラストラクチャをコードで管理できる構成管理ツール。",
+    "deviconId": "terraform",
+    "categoryId": "tool",
+    "tags": ["tool", "iac", "cloud"]
   }
 ]

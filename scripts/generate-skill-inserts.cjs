@@ -83,5 +83,5 @@ for (const { skill_id, tag_id } of skillTagMap) {
 }
 
 // 書き出し
-fs.writeFileSync(path.join(skillDir, 'insert_skills.sql'), sql);
+fs.writeFileSync(path.join(outputDir, 'insert_skills.sql'), sql);
 console.log('insert_skills.sql generated!');

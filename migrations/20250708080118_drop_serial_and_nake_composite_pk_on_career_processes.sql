@@ -1,5 +1,10 @@
--- UUIDサポート
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- 既存テーブルを全削除（依存関係を崩すためCASCADEを必ずつける）
+DROP TABLE IF EXISTS
+  user_skills, skill_tag_map, skills, skill_tags, skill_categories,
+  user_qualifications, qualifications,
+  career_processes, master_processes, career_skills, career_histories,
+  users
+CASCADE;
 
 -- ========================
 -- users（ユーザ情報）
@@ -33,10 +38,10 @@ CREATE TABLE users (
 
 -- ========================
 -- qualifications（資格マスタ）
--- TEXT型の主キー
+-- UUID化
 -- ========================
 CREATE TABLE qualifications (
-  id TEXT PRIMARY KEY,
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL UNIQUE,
   description TEXT,
   is_national BOOL NOT NULL DEFAULT FALSE
@@ -44,11 +49,11 @@ CREATE TABLE qualifications (
 
 -- ========================
 -- user_qualifications（ユーザごとの資格）
--- 複合PK（user_id, qualification_id）
+-- 複合PK（user_id, qualification_id）＋UUID主キーも追加可
 -- ========================
 CREATE TABLE user_qualifications (
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  qualification_id TEXT NOT NULL REFERENCES qualifications(id),
+  qualification_id UUID NOT NULL REFERENCES qualifications(id),
   acquired_at DATE,
   PRIMARY KEY (user_id, qualification_id)
 );
@@ -151,6 +156,6 @@ INSERT INTO master_processes (name) VALUES
 -- ========================
 CREATE TABLE career_processes (
   career_id UUID NOT NULL REFERENCES career_histories(id) ON DELETE CASCADE,
-  process_id INTEGER NOT NULL REFERENCES master_processes(id),
+  process_id UUID NOT NULL REFERENCES master_processes(id),
   PRIMARY KEY (career_id, process_id)
 );
