@@ -3,6 +3,7 @@ import { sampleUsers } from '../../test/sampleUser';
 import Button from '@/components/buttons/Button';
 import IconButton from '@/components/buttons/IconButton';
 import IconLabelButton from '@/components/buttons/IconLabelButton';
+import CirclePhotoCard from '@/components/CirclePhotoCard';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -83,17 +84,12 @@ const Users = () => {
                   onChange={() => handleSelectUser(user.uuid)}
                 />
               </div>
-              <div className="w-1/12">
-                <div className="avatar">
-                  <div className="w-12 rounded-full">
-                    <img
-                      src={user.avatarImagePath}
-                      alt={`${user.name.firstName}${user.name.lastName}'s avatar`}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="w-2/12 font-semibold">{`${user.name.firstName} ${user.name.lastName}`}</div>
+              <CirclePhotoCard
+                src={user.avatarImagePath}
+                altText={`${user.name.firstName}${user.name.lastName}'s avatar`}
+                size={48}
+              />
+              <div className="w-2/12 font-semibold">{`${user.name.lastName} ${user.name.firstName} `}</div>
               <div className="w-4/12 text-gray-500">{user.email}</div>
               <div className="w-2/12 flex justify-center">
                 {user.status === '案件参画中' && (

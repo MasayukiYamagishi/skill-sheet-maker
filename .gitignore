@@ -23,6 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-*.db
-
-*storybook.log
+.env
+GEMINI.md
+public/reference/memo.md

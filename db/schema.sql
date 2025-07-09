@@ -1,40 +1,156 @@
--- ユーザーテーブル
+-- UUIDサポート
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- ========================
+-- users（ユーザ情報）
+-- （既にUUID型。変更不要）
+-- ========================
 CREATE TABLE users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_identifier TEXT UNIQUE, -- 社員番号やユーザIDとして利用
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  user_identifier TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL,
-  name_reading TEXT NOT NULL,
-  birth_date DATE,
-  age INTEGER,
-  gender TEXT,
-  email TEXT UNIQUE NOT NULL,
-  mbti_result TEXT,
-  mbti_explanation TEXT,
-  enrollment_start_date DATE,
-  enrollment_end_date DATE -- 社員の場合はNULL
+  name_kana TEXT NOT NULL,
+  birth_date DATE NOT NULL,
+  gender TEXT NOT NULL CHECK (gender IN ('male', 'female', 'other')),
+  email TEXT NOT NULL UNIQUE,
+  mbti_code TEXT,
+  joined_at DATE,
+  retired_at DATE,
+  final_education TEXT,
+  status TEXT NOT NULL CHECK (status IN ('inProject', 'available', 'onLeave', 'retired')),
+  affiliation TEXT,
+  avatar_path TEXT,
+  github_url TEXT,
+  pr_text TEXT,
+  specialty TEXT,
+  tech_strength TEXT,
+  sales_comment TEXT,
+  toeic_score INTEGER CHECK (toeic_score IS NULL OR (toeic_score % 5 = 0 AND toeic_score >= 0)),
+  other_skills TEXT
 );
 
--- 資格（クオリフィケーション）テーブル
+-- ========================
+-- qualifications（資格マスタ）
+-- TEXT型の主キー
+-- ========================
 CREATE TABLE qualifications (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER NOT NULL,
-  qualification TEXT,
-  FOREIGN KEY (user_id) REFERENCES users(id)
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE,
+  description TEXT,
+  is_national BOOL NOT NULL DEFAULT FALSE
 );
 
--- 職歴・経歴テーブル
-CREATE TABLE career_histories (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER NOT NULL,
-  career_description TEXT,
-  FOREIGN KEY (user_id) REFERENCES users(id)
+-- ========================
+-- user_qualifications（ユーザごとの資格）
+-- 複合PK（user_id, qualification_id）
+-- ========================
+CREATE TABLE user_qualifications (
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  qualification_id TEXT NOT NULL REFERENCES qualifications(id),
+  acquired_at DATE,
+  PRIMARY KEY (user_id, qualification_id)
 );
 
--- スキルセットテーブル（スキルとレベルを保持）
+-- ========================
+-- skill_categories（スキルカテゴリマスタ）
+-- TEXT主キー（現状維持）
+-- ========================
+CREATE TABLE skill_categories (
+  id TEXT PRIMARY KEY,
+  label TEXT NOT NULL,
+  description TEXT
+);
+
+-- ========================
+-- skill_tags（スキルタグマスタ）
+-- TEXT主キー（現状維持）
+-- ========================
+CREATE TABLE skill_tags (
+  id TEXT PRIMARY KEY,
+  label TEXT NOT NULL,
+  description TEXT
+);
+
+-- ========================
+-- skills（スキルマスタ）
+-- TEXT主キー（現状維持）
+-- ========================
 CREATE TABLE skills (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER NOT NULL,
-  skill_name TEXT,
-  skill_level INTEGER,  -- 数値でレベルを表現（例：1～10）
-  FOREIGN KEY (user_id) REFERENCES users(id)
+  id TEXT PRIMARY KEY,
+  label TEXT NOT NULL,
+  description TEXT,
+  devicon_id TEXT,
+  category_id TEXT NOT NULL REFERENCES skill_categories(id)
+);
+
+-- ========================
+-- skill_tag_map（スキルタグ付け多対多）
+-- 複合PK
+-- ========================
+CREATE TABLE skill_tag_map (
+  skill_id TEXT NOT NULL REFERENCES skills(id) ON DELETE CASCADE,
+  tag_id TEXT NOT NULL REFERENCES skill_tags(id) ON DELETE CASCADE,
+  PRIMARY KEY (skill_id, tag_id)
+);
+
+-- ========================
+-- user_skills（ユーザごとのスキル）
+-- 複合PK（user_id, skill_id）
+-- ========================
+CREATE TABLE user_skills (
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  skill_id TEXT NOT NULL REFERENCES skills(id),
+  version TEXT,
+  PRIMARY KEY (user_id, skill_id)
+);
+
+-- ========================
+-- career_histories（経歴）
+-- UUID主キー
+-- ========================
+CREATE TABLE career_histories (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  started_at DATE,
+  ended_at DATE,
+  description TEXT,
+  role TEXT,
+  scale TEXT
+);
+
+-- ========================
+-- career_skills（経歴ごとのスキル/技術）
+-- 複合PK（career_id, skill_id）
+-- ========================
+CREATE TABLE career_skills (
+  career_id UUID NOT NULL REFERENCES career_histories(id) ON DELETE CASCADE,
+  skill_id TEXT NOT NULL REFERENCES skills(id),
+  version TEXT,
+  PRIMARY KEY (career_id, skill_id)
+);
+
+-- ========================
+-- master_processes（担当工程マスタ）
+-- UUID主キー
+-- ========================
+CREATE TABLE master_processes (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL UNIQUE
+);
+
+-- 初期データ挿入例
+INSERT INTO master_processes (name) VALUES
+  ('要件定義'), ('基本設計'), ('詳細設計'), ('実装'), ('テスト'), ('保守・運用');
+
+-- ========================
+-- career_processes（経歴ごとの担当工程）
+-- 複合PK（career_id, process_id）
+-- ========================
+CREATE TABLE career_processes (
+  career_id UUID NOT NULL REFERENCES career_histories(id) ON DELETE CASCADE,
+  process_id INTEGER NOT NULL REFERENCES master_processes(id),
+  PRIMARY KEY (career_id, process_id)
 );

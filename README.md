@@ -14,9 +14,11 @@ Rust ベースのデスクトップアプリケーションフレームワーク
 - Vite 6.3.1
 - TypeScript
 - tailwindcss v4.1
-- daisyUI 5.0.35
-- SQLite 5.1.7
+- daisyUI 5.0.43
 - Node v22.14.0
+- PostgreSQL
+- sqlx v0.6
+- tokio v1
 
 ## 推奨される IDE 設定
 
@@ -41,97 +43,37 @@ npm run tauri dev
 
 ## データベース
 
-### データベースの初期化について
+### データベースの構成
 
-本プロジェクトでは、データベースとして SQLite を使用しています。`users.db` は各開発者ごとに生成するデータファイルであり、リポジトリには含まれていません（`.gitignore`に登録済みです）。
+本プロジェクトではテスト環境用のusers_testと本番環境用のusers_prodという２つのDBを用意しています。
 
-リポジトリをpullしてきた後、以下のコマンドを実行することで、users.dbを作成できます。
+テーブルの構成は`schema.sql`をドキュメンテーション用途で残してあるので、そちらをご覧ください。
 
-```bash
-node db/init_db.js
-```
+データベースの内容をまっさらにした場合、以下の順番でデータを流し込む必要があります。
 
-package.jsonにコマンドを登録しているので、次のコマンドでも`init-db.js`を実行できます。
+1. user
+2. skill_categories
+3. skill_tags
+4. skills, qualifications（順不同）
+5. career_histories
+6. user_skills & user_qualifications
+7. career_skills & career_process
 
-```bash
-npm run init-db
-```
+`psql`コマンドを使ってデータを流し込む場合、上記5,6,7番目の手順ではデータベースの中身を覗いてUUIDで採番されたidの値を確認する必要があるので注意が必要です。
 
-コマンドを実行することで動かすファイル：**init_db.js** と **schema.sql**
+### データベースの更新
 
-→ `./db` ディレクトリ内に配置されています。
+本プロジェクトでは、**PostgreSQL + sqlx + tokio-postgres**でDBを構築しています。
+sqlxを使うことで、DBスキーマの履歴がすべてマイグレーションで管理されています。
 
-実行することで以下のファイルが生成されます。
+データベースのスキーマを更新する流れは次の通りです。
 
-- **users.db**：プロジェクト直下に生成されます。
-
-### データベーススキーマの更新手順
-
-以下の手順で、新しいテーブル追加やカラム変更などのスキーマ更新を行います。SQLiteとSQLxを利用したマイグレーション機能を使います。
-
-1. **環境変数を確認**  
-   プロジェクトルート（`Cargo.toml` と同じ階層）にある `.env` に、データベース接続先が正しく書かれているかを確認します。
-
-   ```dotenv
-   # 例: SQLite ファイルをルート直下の users.db に置く
-   DATABASE_URL="sqlite://./users.db"
-   ```
-
-2. **新しいマイグレーションファイルを作成**
-   Tauri 側ディレクトリ（通常は src-tauri/）に移動して、マイグレーションファイルを追加します。
-
-   ```bash
-   cd src-tauri
-   sqlx migrate add <YYYYMMDDHHMMSS>\_説明的な名前
-   ```
-
-   すると migrations/ 配下にタイムスタンプ付きフォルダが作成され、その中に up.sql／down.sql が空ファイルで置かれます。
-
-3. **`up.sql`／`down.sql`を編集**
-
-   `up.sql`に「適用時」の SQL（例：ALTER TABLE users ADD COLUMN new_col TEXT;）を記述する。
-
-   down.sql に「ロールバック時」の SQL（例：`ALTER TABLE users DROP COLUMN new_col;` など）を記述
-
-4. **マイグレーションを実行**
-   `up.sql`をすべて適用して、実際の `users.db`を更新します。
-
-   ```bash
-   sqlx migrate run
-   ```
-
-   正常に終わると `__sqlx_migrations`テーブルに新しいバージョンが記録されます。
-
-5. **（オフラインマクロ利用時のみ）クエリチェックデータの再生成**
-   SQLx のマクロ（query! や query_as!）をオフラインモードで使っている場合、マイグレーション後にデータベーススキーマの参照ファイルを更新します。
-
-```bash
-# プロジェクトルートで
-SQLX_OFFLINE=1 cargo sqlx prepare -- --lib
-```
-
-6. **アプリケーションの再ビルド・再起動**
-
-   - Rust 側を再ビルド（`cd src-tauri && cargo build`）
-   - フロントエンド＆Tauri を再起動（`npm run tauri dev` など）
-
-7. **ロールバック（必要な場合のみ）**
-   ひとつ前のマイグレーションまで戻したいとき：
-
-   ```bash
-   sqlx migrate revert
-   ```
-
-   特定ステップ分だけ戻す場合：
-
-   ```bash
-   sqlx migrate revert --rev <ステップ数>
-   ```
-
-> 💡**Tips**
-> マイグレーションファイルは必ず Git 管理下に置き、**schema.sql ではなく migrations/ フォルダ内の up.sql を編集してください。**
->
-> こうすることで、誰でも同じ手順でローカル DB を再現できます。
+1. `sqlx migrate add <任意の名前>`を実行して、マイグレーションファイルを作成します。
+   例： `sqlx migrate add schema_renew`
+2. マイグレーションファイルが./migrations配下にできたら、DBのテーブル定義に対して加えたい変更のSQL文を書いていきます。
+   マイグレーションファイルはそのまま履歴なので、過去のマイグレーションファイルを変更してはいけません。
+3. マイグレーションファイルの内容が完成したら、`.env`ファイルに記述した`DATABASE_URL`の向き先が変更したいDBのリンクになっていることを確認して、`sql migrate run`コマンドを実行します。
+4. DBのテーブル定義などがマイグレーションファイルに記述された内容で変更・更新されます。
 
 ---
 

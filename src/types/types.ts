@@ -1,154 +1,225 @@
-import { GenderConst, UserStatusConst } from '@/constants/constants';
-import { MbtiCodeConst, MbtiDataConst, MbtiIdentityConst } from '@/constants/mbtiDetails';
-import { QualificationOptions } from '@/constants/qualifications';
-import { toastKindMap } from '@/constants/toast';
+// types.ts
 
-/**
- * ============
- * ユーザー情報関連
- * ============
+/** ==========================
+ *  基本型・共通ユーティリティ
+ * ==========================
  */
 
-/** システム上の基本情報. */
+/** UUID（DB上はuuid型, TSはstringで管理） */
+export type UUID = string;
+/** SQL日付型（YYYY-MM-DD形式の文字列） */
+export type SqlDate = string;
+/** タイムスタンプ（ISO8601文字列, 例: "2023-12-01T12:34:56Z"） */
+export type SqlTimestamp = string;
+
+/** ==========================
+ *   ユニオン型（DB値に対応）
+ * ==========================
+ */
+
+/** 性別のDB値 */
+export type Gender = 'male' | 'female' | 'other';
+/** ユーザーステータスのDB値 */
+export type UserStatus = 'inProject' | 'available' | 'onLeave' | 'retired';
+/** スキルカテゴリID */
+export type SkillCategoryId = string; // 例: 'os'
+/** スキルタグID */
+export type SkillTagId = string; // 例: 'linux'
+/** スキルID */
+export type SkillId = string; // 例: 'windows11'
+/** MBTIコード */
+export type MbtiCode = string; // 例: "INTP"
+/** 担当工程ID（master_processes） */
+export type ProcessId = number; // DBはserial, TSはnumber
+
+/** ==========================
+ *   ユーザ情報・本人情報
+ * ==========================
+ */
+
 export type BaseEntity = {
-  /** UUID. */
-  uuid: string;
-  /** 作成日. */
-  createdAt: Date;
-  /** 更新日. */
-  updatedAt: Date;
+  uuid: UUID;
+  createdAt: SqlTimestamp;
+  updatedAt: SqlTimestamp;
 };
 
-export type Entity<T> = {
-  [K in keyof T]: T[K];
-} & BaseEntity;
-
-/** 名前. */
-export type Name = {
-  /** 名前. */
-  firstName: string;
-  /** 苗字. */
-  lastName: string;
-  /** 名前カナ. */
-  firstNameKana: string;
-  /** 苗字カナ. */
-  lastNameKana: string;
+export type User = BaseEntity & {
+  userIdentifier: string;
+  name: string;
+  nameKana: string;
+  birthDate: SqlDate;
+  gender: Gender;
+  email: string;
+  mbtiCode?: MbtiCode;
+  joinedAt?: SqlDate;
+  retiredAt?: SqlDate;
+  finalEducation?: string;
+  status: UserStatus;
+  affiliation?: string;
+  avatarPath?: string;
+  githubUrl?: string;
+  prText?: string;
+  specialty?: string;
+  techStrength?: string;
+  salesComment?: string;
+  toeicScore?: number;
+  otherSkills?: string;
 };
 
-/** 性別. */
-export type Gender = (typeof GenderConst)[keyof typeof GenderConst];
+/** ==========================
+ *   資格マスタ/ユーザ資格
+ * ==========================
+ */
 
-/** MBTIのINTP, ENFJなどのコード型. */
-export type MbtiCode = (typeof MbtiCodeConst)[keyof typeof MbtiCodeConst];
+export type Qualification = {
+  id: number;
+  name: string;
+  description?: string;
+  isNational: boolean;
+};
 
-/** MBTIのAかTかを示すアイデンティティの型. */
-export type MbtiIdentity = (typeof MbtiIdentityConst)[keyof typeof MbtiIdentityConst];
+export type UserQualification = {
+  id: number;
+  userId: UUID;
+  qualificationId: number;
+  acquiredAt?: SqlDate;
+};
 
-/** MBTIのcodeとIdentityに紐づいた詳細データの型. */
-export type MbtiDetails = (typeof MbtiDataConst)[MbtiCode];
+/** ==========================
+ *   スキルカテゴリ・タグ・スキル
+ * ==========================
+ */
 
-/** MBTI. */
+/** スキルカテゴリ */
+export type SkillCategory = {
+  id: SkillCategoryId;
+  label: string;
+  description?: string;
+};
+
+/** スキルタグ */
+export type SkillTag = {
+  id: SkillTagId;
+  label: string;
+  description?: string;
+};
+
+/** スキル本体 */
+export type Skill = {
+  id: SkillId;
+  label: string;
+  description?: string;
+  deviconId?: string;
+  categoryId: SkillCategoryId;
+  tags?: SkillTagId[]; // DBからJOIN取得時など
+};
+
+/** スキル+タグ情報を一発で返す場合 */
+export type SkillWithTags = Skill & {
+  tags: SkillTag[];
+};
+
+/** ユーザが持つスキル */
+export type UserSkill = {
+  id: number;
+  userId: UUID;
+  skillId: SkillId;
+  version?: string;
+};
+
+/** ==========================
+ *   経歴・プロジェクト履歴
+ * ==========================
+ */
+
+export type CareerHistory = {
+  id: number;
+  userId: UUID;
+  title: string;
+  startedAt?: SqlDate;
+  endedAt?: SqlDate;
+  description?: string;
+  role?: string;
+  scale?: string;
+};
+
+/** 経歴ごとの使用スキル */
+export type CareerSkill = {
+  id: number;
+  careerId: number;
+  skillId: SkillId;
+  version?: string;
+};
+
+/** 経歴ごとの担当工程 */
+export type CareerProcess = {
+  id: number;
+  careerId: number;
+  processId: ProcessId;
+};
+
+/** ==========================
+ *   担当工程マスタ
+ * ==========================
+ */
+export type ProcessMaster = {
+  id: ProcessId;
+  name: string; // 例: '要件定義'
+};
+
+/** ==========================
+ *   ソーシャルリンク・その他
+ * ==========================
+ */
+
+export type SocialLinks = {
+  github?: string;
+  linkedin?: string;
+  facebook?: string;
+  x?: string;
+  note?: string;
+  qiita?: string;
+  zenn?: string;
+};
+
+/** ==========================
+ *   画面/コンポーネント系 (任意)
+ * ==========================
+ */
+
+// 例: Toast用など
+export type ToastKind = 'success' | 'info' | 'error' | 'warning';
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'accent'
+  | 'info'
+  | 'success'
+  | 'warning'
+  | 'error'
+  | 'ghost'
+  | 'link';
+
+/** ==========================
+ *   追加：MBTI型など（必要に応じて）
+ * ==========================
+ */
+export type MbtiIdentity = string; // "A" | "T"など
 export type Mbti = {
   code: MbtiCode;
   identity: MbtiIdentity;
 };
 
-/** ユーザステータス. */
-export type UserStatus = (typeof UserStatusConst)[keyof typeof UserStatusConst];
-
-/** 資格情報. */
-export type Qualification = (typeof QualificationOptions)[number];
-
-/** 経歴. */
-export type Experience = {
-  /** 経歴の年月日. */
-  date: Date;
-  /** 経歴. */
-  label: string;
-};
-
-/** ソーシャルリンク. */
-export type SocialLinks = {
-  /** GitHub. */
-  github?: string;
-  /** LinkedIn. */
-  linkedin?: string;
-  /** Facebook. */
-  facebook?: string;
-  /** X（旧Twitter）. */
-  x?: string;
-  /** note. */
-  note?: string;
-  /** Qiita. */
-  qiita?: string;
-  /** Zenn. */
-  zenn?: string;
-};
-
-/** スキル. */
-export type Skill = {
-  /** スキルID. */
-  id: string;
-  /** スキルのラベル. */
-  label: string;
-  /** スキルのタグ. */
-  tags: string[];
-};
-
-/** スキルカテゴリ. */
-export type SkillCategory = {
-  /** カテゴリのID. */
-  categoryId: string;
-  /** カテゴリのラベル. */
-  label: string;
-  /** カテゴリに含まれるスキル. */
-  children: Skill[];
-};
-
-/** スキルレベル. */
-export type SkillLevel = {
-  skillId: string;
-  level: number;
-};
-
-/** ユーザ情報. */
-export type User = Entity<{
-  /** 名前. */
-  name: Name;
-  /** メールアドレス. */
-  email: string;
-  /** 性別. */
-  gender: Gender;
-  /** 年齢. */
-  age: number;
-  /** 生年月日. */
-  birthDate: Date;
-  /** プロフィール画像のパス. */
-  avatarImagePath: string | undefined;
-  /** ステータス. */
-  status: UserStatus;
-  /** MBTI. */
-  mbti: Mbti;
-  /** 受講開始日（入社日）. */
-  startDate: Date;
-  /** 受講終了予定日. */
-  endDate: Date | undefined;
-  /** 保有している資格のリスト. */
-  qualifications: Qualification[];
-  /** 学歴・経歴のリスト. */
-  experiences: Experience[];
-  /** ソーシャルリンク. */
-  socialLinks: SocialLinks;
-  /** スキルリスト. */
-  skills: Skill[];
-  /** スキルについての補足情報. */
-  skillInfo: string;
-}>;
-
-/**
- * ============
- * コンポーネント関連
- * ============
+/** ==========================
+ *   型補助：一覧取得など
+ * ==========================
  */
 
-export type ToastKind = keyof typeof toastKindMap;
+// スキルカテゴリ一覧
+export type SkillCategoryList = SkillCategory[];
+// タグ一覧
+export type SkillTagList = SkillTag[];
+// スキル一覧
+export type SkillList = Skill[];
+// 資格一覧
+export type QualificationList = Qualification[];
