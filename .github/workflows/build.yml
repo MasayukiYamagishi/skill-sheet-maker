@@ -1,0 +1,32 @@
+name: Build
+on:
+  push:
+    branches: ['main']
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node.jsセットアップ
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install NPM dependencies
+        run: npm install
+
+      # Rustセットアップ
+      - name: Setup Rust
+        uses: actions/setup-rust@v1
+        with:
+          rust-version: 'stable'
+
+      # バックエンドのビルド
+      - name: Build backend
+        run: cargo check
+
+      # フロントエンドのビルド
+      - name: Build frontend
+        run: npm run build
