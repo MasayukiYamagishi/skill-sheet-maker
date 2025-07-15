@@ -1,2 +1,10 @@
+pub mod career_histories;
+pub mod career_processes;
+pub mod career_skills;
+pub mod master_processes;
+pub mod qualifications;
+pub mod skills;
 pub mod stats;
+pub mod user_qualifications;
+pub mod user_skills;
 pub mod users;
