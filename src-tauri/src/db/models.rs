@@ -147,7 +147,7 @@ pub struct SkillTagMap {
  */
 /// 担当工程マスタ.
 #[derive(Debug, Serialize, Deserialize, FromRow, Clone)]
-pub struct MasterProcesses {
+pub struct MasterProcess {
   pub id: i32,
   pub name: String,
 }
