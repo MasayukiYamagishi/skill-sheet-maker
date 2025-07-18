@@ -1,105 +1,134 @@
-use chrono::NaiveDate;
-use serde::{Deserialize, Serialize};
-use sqlx::{FromRow, PgPool};
+use crate::db::{NewUser, UpdateUser, User};
+use sqlx::PgPool;
+use uuid::Uuid;
 
-#[derive(Serialize, Deserialize, FromRow, Clone)]
-pub struct User {
-  pub id: i32,
-  pub user_identifier: String,
-  pub name: String,
-  pub name_reading: String,
-  pub birth_date: Option<NaiveDate>,
-  pub age: Option<i32>,
-  pub gender: Option<String>,
-  pub email: String,
-  pub mbti_result: Option<String>,
-  pub mbti_explanation: Option<String>,
-  pub enrollment_start_date: Option<NaiveDate>,
-  pub enrollment_end_date: Option<NaiveDate>,
+/**
+ * ユーザ情報全件取得.
+ */
+pub async fn fetch_all_users(pool: &PgPool) -> Result<Vec<User>, sqlx::Error> {
+  let users = sqlx::query_as::<_, User>("SELECT * FROM users").fetch_all(pool).await?;
+  Ok(users)
 }
 
-#[derive(Deserialize)]
-pub struct NewUser {
-  pub user_identifier: String,
-  pub name: String,
-  pub name_reading: String,
-  pub birth_date: Option<NaiveDate>,
-  pub age: Option<i32>,
-  pub gender: Option<String>,
-  pub email: String,
-  pub mbti_result: Option<String>,
-  pub mbti_explanation: Option<String>,
-  pub enrollment_start_date: Option<NaiveDate>,
-  pub enrollment_end_date: Option<NaiveDate>,
+/**
+ * 指定したIDのユーザ情報取得.
+ */
+pub async fn fetch_user_by_id(pool: &PgPool, id: uuid::Uuid) -> sqlx::Result<Option<User>> {
+  sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1").bind(id).fetch_optional(pool).await
 }
 
-pub async fn create_user(pool: &PgPool, u: NewUser) -> anyhow::Result<User> {
-  let rec = sqlx::query_as(
+/**
+ * ユーザ新規登録.
+ */
+pub async fn insert_user(pool: &PgPool, payload: NewUser) -> Result<uuid::Uuid, sqlx::Error> {
+  let rec = sqlx::query_scalar!(
     r#"
     INSERT INTO users (
-      user_identifier, name, name_reading, birth_date, age,
-      gender, email, mbti_result, mbti_explanation,
-      enrollment_start_date, enrollment_end_date
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-    RETURNING *
+      user_identifier, name, name_kana, birth_date, gender, email,
+      mbti_code, joined_at, retired_at, final_education, status, affiliation,
+      avatar_path, github_url, pr_text, specialty, tech_strength, sales_comment, toeic_score, other_skills
+    )
+    VALUES (
+      $1,$2,$3,$4,$5,$6,
+      $7,$8,$9,$10,$11,$12,
+      $13,$14,$15,$16,$17,$18,$19,$20
+    )
+    RETURNING id
     "#,
+    payload.user_identifier,
+    payload.name,
+    payload.name_kana,
+    payload.birth_date,
+    payload.gender,
+    payload.email,
+    payload.mbti_code,
+    payload.joined_at,
+    payload.retired_at,
+    payload.final_education,
+    payload.status,
+    payload.affiliation,
+    payload.avatar_path,
+    payload.github_url,
+    payload.pr_text,
+    payload.specialty,
+    payload.tech_strength,
+    payload.sales_comment,
+    payload.toeic_score,
+    payload.other_skills,
   )
-  .bind(u.user_identifier)
-  .bind(u.name)
-  .bind(u.name_reading)
-  .bind(u.birth_date)
-  .bind(u.age)
-  .bind(u.gender)
-  .bind(u.email)
-  .bind(u.mbti_result)
-  .bind(u.mbti_explanation)
-  .bind(u.enrollment_start_date)
-  .bind(u.enrollment_end_date)
   .fetch_one(pool)
   .await?;
 
   Ok(rec)
 }
 
-pub async fn list_users(pool: &PgPool) -> anyhow::Result<Vec<User>> {
-  let rows = sqlx::query_as("SELECT * FROM users").fetch_all(pool).await?;
-  Ok(rows)
-}
-
-pub async fn get_user(pool: &PgPool, id: i32) -> anyhow::Result<Option<User>> {
-  let row = sqlx::query_as("SELECT * FROM users WHERE id = $1").bind(id).fetch_optional(pool).await?;
-  Ok(row)
-}
-
-pub async fn update_user(pool: &PgPool, u: User) -> anyhow::Result<User> {
-  let rec = sqlx::query_as(
+/**
+ * ユーザ情報更新.
+ */
+pub async fn update_user_by_id(pool: &PgPool, id: Uuid, payload: UpdateUser) -> Result<u64, sqlx::Error> {
+  // 動的なSET句生成もできるが、今回は手動で全部列挙する（全項目Optional前提）
+  let res = sqlx::query(
     r#"
-    UPDATE users SET
-      user_identifier = $1, name = $2, name_reading = $3, birth_date = $4, age = $5,
-      gender = $6, email = $7, mbti_result = $8, mbti_explanation = $9,
-      enrollment_start_date = $10, enrollment_end_date = $11
-    WHERE id = $12
-    RETURNING *
-    "#,
+        UPDATE users SET
+            user_identifier = COALESCE($2, user_identifier),
+            name = COALESCE($3, name),
+            name_kana = COALESCE($4, name_kana),
+            birth_date = COALESCE($5, birth_date),
+            gender = COALESCE($6, gender),
+            email = COALESCE($7, email),
+            mbti_code = COALESCE($8, mbti_code),
+            joined_at = COALESCE($9, joined_at),
+            retired_at = COALESCE($10, retired_at),
+            final_education = COALESCE($11, final_education),
+            status = COALESCE($12, status),
+            affiliation = COALESCE($13, affiliation),
+            avatar_path = COALESCE($14, avatar_path),
+            github_url = COALESCE($15, github_url),
+            pr_text = COALESCE($16, pr_text),
+            specialty = COALESCE($17, specialty),
+            tech_strength = COALESCE($18, tech_strength),
+            sales_comment = COALESCE($19, sales_comment),
+            toeic_score = COALESCE($20, toeic_score),
+            other_skills = COALESCE($21, other_skills),
+            updated_at = now()
+        WHERE id = $1
+        "#,
   )
-  .bind(u.user_identifier)
-  .bind(u.name)
-  .bind(u.name_reading)
-  .bind(u.birth_date)
-  .bind(u.age)
-  .bind(u.gender)
-  .bind(u.email)
-  .bind(u.mbti_result)
-  .bind(u.mbti_explanation)
-  .bind(u.enrollment_start_date)
-  .bind(u.enrollment_end_date)
-  .bind(u.id)
-  .fetch_one(pool)
-  .await?;
-  Ok(rec)
+  .bind(id)
+  .bind(payload.user_identifier)
+  .bind(payload.name)
+  .bind(payload.name_kana)
+  .bind(payload.birth_date)
+  .bind(payload.gender)
+  .bind(payload.email)
+  .bind(payload.mbti_code)
+  .bind(payload.joined_at)
+  .bind(payload.retired_at)
+  .bind(payload.final_education)
+  .bind(payload.status)
+  .bind(payload.affiliation)
+  .bind(payload.avatar_path)
+  .bind(payload.github_url)
+  .bind(payload.pr_text)
+  .bind(payload.specialty)
+  .bind(payload.tech_strength)
+  .bind(payload.sales_comment)
+  .bind(payload.toeic_score)
+  .bind(payload.other_skills)
+  .execute(pool)
+  .await?
+  .rows_affected();
+
+  Ok(res)
 }
 
-pub async fn delete_user(pool: &PgPool, id: i32) -> anyhow::Result<()> {
-  sqlx::query("DELETE FROM users WHERE id = $1").bind(id).execute(pool).await?;
-  Ok(())
+/**
+ * ユーザ情報削除.
+ * IDsに入っているユーザをまとめて削除する
+ */
+pub async fn delete_users_by_ids(pool: &PgPool, ids: &[Uuid]) -> Result<u64, sqlx::Error> {
+  let mut tx = pool.begin().await?;
+  let n = sqlx::query("DELETE FROM users WHERE id = ANY($1)").bind(ids).execute(&mut *tx).await?.rows_affected();
+  tx.commit().await?;
+  Ok(n)
 }

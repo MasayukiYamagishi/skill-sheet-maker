@@ -134,14 +134,12 @@ CREATE TABLE career_skills (
 
 -- ========================
 -- master_processes（担当工程マスタ）
--- UUID主キー
 -- ========================
 CREATE TABLE master_processes (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id SERIAL PRIMARY KEY,
   name TEXT NOT NULL UNIQUE
 );
 
--- 初期データ挿入例
 INSERT INTO master_processes (name) VALUES
   ('要件定義'), ('基本設計'), ('詳細設計'), ('実装'), ('テスト'), ('保守・運用');
 

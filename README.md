@@ -1,5 +1,7 @@
 # skill-sheet-maker
 
+[![Build](https://github.com/MasayukiYamagishi/skill-sheet-maker/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/MasayukiYamagishi/skill-sheet-maker/actions/workflows/build.yml)
+
 スキルシートを簡単に作りたいので実装した社員を管理するためのアプリです。
 
 Rust ベースのデスクトップアプリケーションフレームワークである Tauri を使用して作っています。
@@ -16,18 +18,67 @@ Rust ベースのデスクトップアプリケーションフレームワーク
 - tailwindcss v4.1
 - daisyUI 5.0.43
 - Node v22.14.0
-- PostgreSQL
+- PostgreSQL 17
 - sqlx v0.6
 - tokio v1
 
-## 推奨される IDE 設定
+---
+
+## 環境構築
+
+1. **Node.js依存パッケージのインストール**
+
+```sh
+npm install
+```
+
+2. **Rustの環境構築**
+
+参考：
+[Windows11でRustの環境構築をする【VSCode】](https://qiita.com/y-428/items/4fcad7e73b061d9154f8)
 
 VSCode を使用して開発することを前提としています。
-
 開発をする場合は拡張機能として、以下の２つを導入してください。
 
 - [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode)
 - [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+
+3. **Tauri CLIのインストール**
+
+```sh
+npm install -g @tauri-apps/cli
+```
+
+4. **PostgreSQLのインストール & DBの用意**
+
+参考：
+[PostgreSQLをWindowsにインストールするには](https://qiita.com/tom-sato/items/037b8f8cb4b326710f71)
+
+DBeaverなどを使うと作ったデータベースの中身がわかりやすくなって良いです。
+
+参考：
+[DBeaver使い方メモ](https://qiita.com/12345/items/48f6856e32fd618ea307)
+
+5. **.envファイルの用意**
+
+データベースのURLなどを記述したファイルをプロジェクトディレクトリ直下に用意してください。
+
+```
+APP_VERSION="0.1.0"
+APP_PRODUCTION="true"
+DATABASE_URL="postgres://ユーザ名:パスワード@localhost:5432/データベース名"
+```
+
+6. **データベースのマイグレーション**
+
+```sh
+sqlx migrate run
+```
+
+を実行することで、現在の最新のDBスキーマがデータベース上に再現されます。
+./migrations配下のマイグレーションファイルはいじらないようにしてください。
+
+---
 
 ## 起動
 
@@ -82,21 +133,7 @@ sqlxを使うことで、DBスキーマの履歴がすべてマイグレーシ�
 React の実装では、Bulletproof-React のディレクトリ構成を参考にしてファイルの配置を行います。
 [React プロジェクトのための新しい道: Bulletproof-React ディレクトリ構造の探求](https://qiita.com/konta74315/items/c91c3b6876cef70bf853)
 
-## 初期化手順
+### Rust命名規則
 
-1. **依存パッケージのインストール**  
-   プロジェクトのルートディレクトリで以下のコマンドを実行してください。
-
-   ```bash
-   npm install
-   ```
-
-2. **データベースの初期化**
-
-   リポジトリをクローンしてすぐはデータベースのファイルがないので、以下のコマンドを実行してファイルを生成します。
-
-   ```bash
-   node db/init_db.js
-   または
-   npm run init-db
-   ```
+参考：
+[Rust の命名規則](https://qiita.com/shikuno_dev/items/fc2bcdffdc4d3c3bd16b)
