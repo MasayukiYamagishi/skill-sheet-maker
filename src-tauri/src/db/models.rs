@@ -182,7 +182,7 @@ pub struct NewUserQualifications {
 /// ユーザ資格 更新用.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UpdateUserQualification {
-  pub user_id: uuid::Uuid,
+  pub user_id: Uuid,
   pub qualification_id: String,
   pub acquired_at: Option<chrono::NaiveDate>,
 }
@@ -202,7 +202,7 @@ pub struct DeleteUserQualifications {
 /// ユーザごとのスキル.
 #[derive(Debug, Serialize, Deserialize, FromRow, Clone)]
 pub struct UserSkill {
-  pub user_id: uuid::Uuid,
+  pub user_id: Uuid,
   pub skill_id: String,
   pub version: Option<String>,
 }
@@ -210,7 +210,7 @@ pub struct UserSkill {
 /// ユーザごとのスキル 新規登録用.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NewUserSkill {
-  pub user_id: uuid::Uuid,
+  pub user_id: Uuid,
   pub skill_id: String,
   pub version: Option<String>,
 }
@@ -243,8 +243,8 @@ pub struct DeleteUserSkills {
 /// 経歴情報取得用.
 #[derive(Debug, Serialize, Deserialize, FromRow, Clone)]
 pub struct CareerHistory {
-  pub id: uuid::Uuid,
-  pub user_id: uuid::Uuid,
+  pub id: Uuid,
+  pub user_id: Uuid,
   pub title: String,
   pub started_at: Option<chrono::NaiveDate>,
   pub ended_at: Option<chrono::NaiveDate>,
@@ -256,7 +256,7 @@ pub struct CareerHistory {
 /// 経歴情報新規登録用.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NewCareerHistory {
-  pub user_id: uuid::Uuid,
+  pub user_id: Uuid,
   pub title: String,
   pub started_at: Option<chrono::NaiveDate>,
   pub ended_at: Option<chrono::NaiveDate>,
@@ -274,6 +274,8 @@ pub struct NewCareerHistories {
 /// 経歴情報更新用.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UpdateCareerHistory {
+  pub id: Uuid,
+  pub user_id: Uuid,
   pub title: Option<String>,
   pub started_at: Option<chrono::NaiveDate>,
   pub ended_at: Option<chrono::NaiveDate>,
@@ -291,7 +293,7 @@ pub struct DeleteCareerHistories {
 /// 経歴に紐づくスキル取得用.
 #[derive(Debug, Serialize, Deserialize, FromRow, Clone)]
 pub struct CareerSkill {
-  pub career_id: uuid::Uuid,
+  pub career_id: Uuid,
   pub skill_id: String,
   pub version: Option<String>,
 }
@@ -299,7 +301,7 @@ pub struct CareerSkill {
 /// 経歴に紐づくスキル新規登録用.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NewCareerSkill {
-  pub career_id: uuid::Uuid,
+  pub career_id: Uuid,
   pub skill_id: String,
   pub version: Option<String>,
 }
@@ -326,14 +328,14 @@ pub struct DeleteCareerSkills {
 /// 経歴に紐づく担当工程取得用.
 #[derive(Debug, Serialize, Deserialize, FromRow, Clone)]
 pub struct CareerProcess {
-  pub career_id: uuid::Uuid,
+  pub career_id: Uuid,
   pub process_id: i32, // SERIAL/INTEGER型
 }
 
 /// 経歴に紐づく担当工程新規登録用.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NewCareerProcess {
-  pub career_id: uuid::Uuid,
+  pub career_id: Uuid,
   pub process_id: i32,
 }
 
@@ -346,7 +348,7 @@ pub struct NewCareerProcesses {
 /// 経歴に紐づく担当工程更新用.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UpdateCareerProcess {
-  pub career_id: Option<uuid::Uuid>,
+  pub career_id: Option<Uuid>,
   pub process_id: Option<i32>,
 }
 
